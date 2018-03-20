@@ -6,6 +6,7 @@ from utils import *
 import scipy
 from PIL import Image
 from scipy import ndimage
+import pickle
 
 train_x_orig, train_y, test_x_orig, test_y, classes = load_data()
 
@@ -36,6 +37,14 @@ n_x = 12288     # num_px * num_px * 3
 n_h = 7
 n_y = 1
 layers_dims = (n_x, n_h, n_y)
+
+
+
+def save_obj(obj, name ):
+    with open(name + '.pkl', 'wb') as f:
+        pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
+
+
 
 def L_layer_model(X, Y, layers_dims, learning_rate = 0.0075, num_iterations = 3000, print_cost=False):#lr was 0.009
     """
@@ -96,23 +105,11 @@ def L_layer_model(X, Y, layers_dims, learning_rate = 0.0075, num_iterations = 30
     plt.xlabel('iterations (per tens)')
     plt.title("Learning rate =" + str(learning_rate))
     plt.show()
+
+    parameters["num_px"] = num_px
     
     return parameters
 
 parameters = L_layer_model(train_x, train_y, layers_dims, num_iterations = 2500, print_cost = True)
 
-print(parameters)
-#pred_test = predict(test_x, test_y, parameters)
-
-my_image = "pexels-photo-302769.jpeg" # change this to the name of your image file 
-my_label_y = [1] # the true class of your image (1 -> cat, 0 -> non-cat)
-## END CODE HERE ##
-
-fname = "images/" + my_image
-image = np.array(ndimage.imread(fname, flatten=False))
-my_image = scipy.misc.imresize(image, size=(num_px,num_px)).reshape((num_px*num_px*3,1))
-my_image = my_image/255.
-my_predicted_image = predict(my_image, my_label_y, parameters)
-
-plt.imshow(image)
-print ("y = " + str(np.squeeze(my_predicted_image)) + ", your L-layer model predicts a \"" + classes[int(np.squeeze(my_predicted_image)),].decode("utf-8") +  "\" picture.")
+save_obj(parameters, "parameters")
