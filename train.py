@@ -34,8 +34,8 @@ print ("train_x's shape: " + str(train_x.shape))
 print ("test_x's shape: " + str(test_x.shape))
 
 n_x = 12288     # num_px * num_px * 3
-n_h = 7
-n_y = 1
+n_h = 197 #7
+n_y = 1 #1
 layers_dims = (n_x, n_h, n_y)
 
 

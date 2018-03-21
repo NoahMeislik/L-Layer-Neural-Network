@@ -363,3 +363,6 @@ def load_data():
     test_set_y_orig = test_set_y_orig.reshape((1, test_set_y_orig.shape[0]))
     
     return train_set_x_orig, train_set_y_orig, test_set_x_orig, test_set_y_orig, classes
+
+train_dataset = h5py.File('datasets/train_catvnoncat.h5', "r")
+print(train_dataset["train_set_y"][:])
