@@ -24,15 +24,16 @@ def sigmoid(Z):
     """
     Performs the sigmoid function.
     """
-    return 1 / (1+np.exp(-Z))
+
+    Z = 1 / (1+np.exp(-Z))
+    return Z
 
 def cost(A, Y, x_shape):
-    return (- 1 / x_shape)*np.sum(Y*np.log(A) + (1 - Y)*(np.log(1 - A)))
+    cost = (- 1 / x_shape)*np.sum(Y*np.log(A) + (1 - Y)*(np.log(1 - A)))
+    return cost
 
 def forward_propagation(X, Y, w, b):
     x_shape = X.shape[1]
-
-    A = sigmoid(X)
 
     A = np.dot(w.T, X)+b
     A = sigmoid(A)
@@ -52,6 +53,9 @@ def gradient_descent(X, Y, w, b, iterations, alpha):
         A = forward_propagation(X, Y, w, b)
         dw, db = backward_propagation(A, X, Y)
 
+        if i % 100 == 0:
+            print("100 steps completed")
+
         w -= alpha * dw
         b -= alpha * db
 
@@ -66,18 +70,13 @@ def predict(X, w, b):
     A = np.dot(w.T, X)+b
     A = sigmoid(A)
 
+    prediction = np.zeros((1, x_shape))
+
+
     for i in range(A.shape[1]):
         prediction[0, i] = 1 if A[0, i] > 0.5 else 0
 
     return prediction
-
-Xtrain, Ytrain = load_data()
-
-m_train = Ytrain.shape[1]
-num_px = Xtrain.shape[1]
-
-Xtrain = Xtrain.reshape(Xtrain.shape[0], -1).T
-train_set_x = Xtrain / 255.
 
 
 def model(Xtrain, Ytrain, iterations=4000, alpha=0.4):
@@ -88,7 +87,7 @@ def model(Xtrain, Ytrain, iterations=4000, alpha=0.4):
 
     prediction = predict(Xtrain, w, b)
     accuracy = 100-np.mean(np.abs(prediction - Ytrain) * 100)
-    print("The accuracy of the model is: " + accuracy)
+    print("The accuracy of the model is: " + str(accuracy))
 
     parameters = {
         "w": w,
@@ -99,5 +98,13 @@ def model(Xtrain, Ytrain, iterations=4000, alpha=0.4):
     }
 
     return parameters
+Xtrain, Ytrain = load_data()
+
+m_train = Ytrain.shape[1]
+num_px = Xtrain.shape[1]
+
+Xtrain = Xtrain.reshape(Xtrain.shape[0], -1).T
+Xtrain = Xtrain / 255.
+
 
 parameters = model(Xtrain, Ytrain)
